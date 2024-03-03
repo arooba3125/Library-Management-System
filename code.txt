@@ -1,0 +1,287 @@
+#pragma
+#ifndef BOOKS_H
+#define BOOKS_H
+#include<iostream>
+using namespace std;
+class Books {
+	string Btitile;         // Title of the book
+	string Bauthor;         // Author of the book
+	long int ISBN;          // ISBN of the book
+	string genre;           // Genre of the book
+	int publication_year;   // Publication year of the book
+	int no_of_pages;        // Number of pages in the book
+	float* price;           // Pointer to store old and new prices
+
+public:
+	// Default constructor
+	Books();
+
+	// Parameterized constructor
+	Books(string, string, long int, string, int, int, float, float);
+
+	// Destructor
+	~Books();
+
+	// Copy constructor
+	Books(const Books& obj);
+
+	// Setter functions
+	void settitle(string);       // Set title of the book
+	void setauthor(string);      // Set author of the book
+	void setisbn(long int);      // Set ISBN of the book
+	void setgenre(string);       // Set genre of the book
+	void setpubyear(int);        // Set publication year of the book
+	void setpages(int);          // Set number of pages in the book
+	void setPrices(float, float);// Set prices of the book
+
+	// Getter functions
+	string gettitle();           // Get title of the book
+	string getauthor();          // Get author of the book
+	long int getisbn();          // Get ISBN of the book
+	string getgenre();           // Get genre of the book
+	int getpubyear();            // Get publication year of the book
+	int getpages();              // Get number of pages in the book
+	float getOldPrice();         // Get old price of the book
+	float getNewPrice();         // Get new price of the book
+
+	// Convert object state to string
+	string tostring();
+
+	// Write book details to file
+	void writetofile();
+	//view  all records
+	void viewallrecords();
+	//counting the number of books
+	int countBooks();
+};
+#endif 
+
+
+
+
+
+#include "Books.h"
+#include <string.h>
+#include <string>
+#include <fstream>
+#include <iomanip>
+using namespace std;
+
+// Constructor
+Books::Books() {
+    // Initialize your members here
+    Btitile = " ";
+    Bauthor = "";
+    ISBN = 0;
+    genre = "";
+    publication_year = 0;
+    no_of_pages = 0;
+    price = new float[2]; // Allocate memory for the price array
+    price[0] = 0; // Set old price to the provided value
+    price[1] = 0;
+}
+
+
+// Parameterized Constructor
+Books::Books(string title, string author, long int isbn, string book_genre, int pub_year, int pages, float oldprice, float newprice) {
+    // Initialize your members with the provided parameters
+    Btitile = title;
+    Bauthor = author;
+    ISBN = isbn;
+    genre = book_genre;
+    publication_year = pub_year;
+    no_of_pages = pages;
+    price = new float[2]; // Allocate memory for the price array
+    price[0] = oldprice; // Set old price to the provided value
+    price[1] = newprice;
+}
+
+
+// Destructor
+Books::~Books() {
+    // No dynamic memory allocation, so no need to deallocate anything
+}
+
+// Copy Constructor
+Books::Books(const Books& obj) {
+   this->Btitile = obj.Btitile;
+   this->Bauthor = obj.Bauthor;
+   this->ISBN = obj.ISBN;
+   this->genre = obj.genre;
+   this->publication_year = obj.publication_year;
+   this->no_of_pages = obj.no_of_pages;
+   this->price[0] = obj.price[0];
+   this->price[1] = obj.price[1];
+}
+
+// Setter functions
+void Books::settitle(string title) {
+    Btitile = title;
+}
+
+void Books::setauthor(string author) {
+    Bauthor = author;
+}
+
+void Books::setisbn(long int isbn) {
+    ISBN = isbn;
+}
+
+void Books::setgenre(string book_genre) {
+    genre = book_genre;
+}
+
+void Books::setpubyear(int year) {
+    publication_year = year;
+}
+
+void Books::setpages(int pages) {
+    no_of_pages = pages;
+}
+
+void Books::setPrices(float oldprice, float newprice) {
+    price[0] = oldprice;
+    price[1] = newprice;
+}
+
+// Getter functions
+string Books::gettitle() {
+    return Btitile;
+}
+
+string Books::getauthor() {
+    return Bauthor;
+}
+
+long int Books::getisbn() {
+    return ISBN;
+}
+
+string Books::getgenre() {
+    return genre;
+}
+
+int Books::getpubyear() {
+    return publication_year;
+}
+
+int Books::getpages() {
+    return no_of_pages;
+}
+
+float Books::getOldPrice() {
+    return price[0];
+}
+
+float Books::getNewPrice() {
+    return price[1];
+}
+
+// Function to convert object to string
+string Books::tostring() {
+    return "Title: " + Btitile + "\nAuthor: " + Bauthor + "\nISBN: " + to_string(ISBN) + "\nGenre: " + genre + "\nPublication Year: " + to_string(publication_year) + "\nNo. of Pages: " + to_string(no_of_pages) + "\nOld Price: $" + to_string(price[0]) + "\nNew Price: $" + to_string(price[1]);
+}
+
+// Function to write object details to a file
+void Books::writetofile() {
+    ofstream fout;
+    fout.open("BOOKS_LIST.txt", ios::app); // Open the file for writing in append mode
+
+    fout << setw(15) << Btitile << setw(12) << Bauthor << setw(12) << ISBN << setw(12) << genre << setw(12) << publication_year << setw(12) << no_of_pages << setw(12) << price[0] << setw(12) << price[1] << endl; // Write product details to the file
+    fout.close(); // Close the file
+}
+
+void Books::viewallrecords() {
+    ifstream fin("BOOKS_LIST.txt");
+
+    try {
+        if (!fin.is_open()) {
+            throw runtime_error("File does not exist or cannot be opened.");
+        }
+    }
+    catch (runtime_error& e) {
+        cout << "Error: " << e.what() << endl;
+        return ;
+    }
+
+    while (fin >> Btitile >> Bauthor >> ISBN >> genre >> publication_year >> no_of_pages >> price[0] >> price[1]) {
+        cout << "Title: " << Btitile << "\n"
+            << "Author: " << Bauthor << "\n"
+            << "ISBN: " << ISBN << "\n"
+            << "Genre: " << genre << "\n"
+            << "Publication Year: " << publication_year << "\n"
+            << "No. of Pages: " << no_of_pages << "\n"
+            << "Old Price: $" << price[0] << "\n"
+            << "New Price: $" << price[1] << "\n\n";
+    }
+
+    fin.close(); // Close the file
+    
+}
+
+
+
+    // Function to count the number of books in the file
+int Books::countBooks() {
+        ifstream fin("BOOKS_LIST.txt");
+        int count = 0; // Initialize count to 0
+
+        // Check if the file is open
+        try {
+            if (!fin.is_open()) {
+                throw runtime_error("File not exist");
+            }
+        }
+        catch (runtime_error& e) {
+            cout << "Error: " << e.what() << endl;
+            return 0; // Return 0 if file doesn't exist or cannot be opened
+        }
+
+        string line;
+        while (getline(fin, line)) {
+            count++; // Increment count for each line (each book)
+        }
+
+        fin.close(); // Close the file
+
+        return count;
+    }
+
+
+
+
+
+
+
+
+#include <iostream>
+#include "Books.h"
+
+using namespace std;
+
+int main() {
+    // Creating objects using the parameterized constructor
+    Books book1("The Great Gatsby", "F. Scott Fitzgerald", 4678345572728, "Fiction", 1925, 180, 10.6, 8.8);
+    Books book2("To Kill a Mockingbird", "Harper Lee", 9780061120084, "Fiction", 1960, 281, 12.5, 9.99);
+    Books book3("1984", "George Orwell", 9780451524935, "Science Fiction", 1949, 328, 14.99, 11.99);
+    Books book4("Pride and Prejudice", "Jane Austen", 9780141439518, "Romance", 1813, 279, 9.99, 7.5);
+    Books book5("The Catcher in the Rye", "J.D. Salinger", 9780316769488, "Fiction", 1951, 277, 11.25, 8.75);
+
+    // Writing books to file
+    book1.writetofile();
+    book2.writetofile();
+    book3.writetofile();
+    book4.writetofile();
+    book5.writetofile();
+
+    // Displaying all records
+    cout << "All records in the file:" << endl;
+    cout << "------------------------" << endl;
+    book1.viewallrecords();
+
+    // Counting the number of books
+    int totalBooks = book1.countBooks();
+    cout << "\nTotal number of books: " << totalBooks << endl;
+
+    return 0;
+}
